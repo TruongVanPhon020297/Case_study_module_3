@@ -103,7 +103,7 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label for="example-fileinput" class="col-form-label">File Image</label>
-                                            <input type="file" id="example-fileinput" class="form-control-file" name="file" accept="image/*">
+                                            <input type="file" id="example-fileinput" class="form-control-file" name="file" required accept="image/*">
                                         </div>
                                     </div>
                                     <button type="submit" class="btn btn-primary waves-effect waves-light">Create</button>

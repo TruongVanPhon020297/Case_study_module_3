@@ -29,8 +29,26 @@ public class UploadFile {
         for (Part part : req.getParts()) {
             part.write(fileName2 + extractFileName(part));
             fileName += extractFileName(part);
-            System.out.println(extractFileName(part));
         }
         return fileName;
     }
+    public static boolean checkFile(HttpServletRequest request) throws ServletException, IOException {
+        boolean check = false;
+        for (Part part : request.getParts()){
+            if (part.getName().equals("file") && part.getSize() == 0 ){
+                check = true;
+            }
+        }
+        return check;
+    }
+    public static boolean checkNoFile(HttpServletRequest request) throws ServletException, IOException {
+        boolean check = false;
+        for (Part part : request.getParts()){
+            if(part.getContentType()!=null && part.getContentType().startsWith("image")) {
+                check = true;
+            }
+        }
+        return check;
+    }
+
 }

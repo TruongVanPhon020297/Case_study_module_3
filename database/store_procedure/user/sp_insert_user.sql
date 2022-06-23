@@ -6,7 +6,7 @@ CREATE PROCEDURE sp_insert_user(
     IN email_in NVARCHAR(255),
     IN password_in NVARCHAR(255),
     IN admin_in INT,
-    IN url_image_in NVARCHAR(255),
+    IN address_in NVARCHAR(255),
     OUT success TINYINT(1),
     OUT message NVARCHAR(255)
 )
@@ -20,13 +20,14 @@ BEGIN
 			THEN
 				SET message = "Email Bị Trùng";
 	ELSE
-		IF(admin_in != 1 OR admin_in != 0)
+		IF(admin_in > 1 OR admin_in < 0)
 			THEN
 				SET message = "Loại Tài Khoản Không Hợp Lệ";
 	ELSE
-		INSERT INTO `db_case_md3`.`_user` (`full_name`, `mobile`, `email`, `password_user`, `registered_at`, `_admin`, `_status`, `url_image`) 
-        VALUES (full_name_in, mobile_in, email_in, password_in, NOW(), admin_in, 1, url_image_in);
-
+		INSERT INTO `db_case_md3`.`_user` (`full_name`, `mobile`, `email`, `password_user`, `registered_at`, `_admin`, `_status`, `url_image`,`address`) 
+        VALUES (full_name_in, mobile_in, email_in, password_in, NOW(), admin_in, 1, '64-646593_thamali-k-i-s-user-default-image-jpg.png',address_in);
+		SET message = "Thêm Tài Khoản Thành Công";
+        SET success = TRUE;
 					END IF;
 			END IF;
 	END IF;

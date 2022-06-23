@@ -177,7 +177,7 @@
                                         <c:forEach begin="1" end="${noOfPages}" var="i">
                                             <c:choose>
                                                 <c:when test="${currentPage eq i}">
-                                                    <li class="page-item page-link" style="background: #00ff80">${i}</li>
+                                                    <li class="page-item page-link" style="background: #00ff80;color: red">${i}</li>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <li class="page-item"><a class="page-link" href="/product?page=${i}">${i}</a></li>

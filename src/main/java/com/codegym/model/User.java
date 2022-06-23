@@ -10,32 +10,38 @@ public class User {
     private String updatedAt;
     private int admin;
     private int status;
+    private String address;
     private String urlImage;
 
-    public User(int id, String fullName, String mobile, String email, String passwordUser, String registeredAt, String updatedAt, int admin, int status, String urlImage) {
+    public User(int id, String fullName, String mobile, String email, String address) {
         this.id = id;
         this.fullName = fullName;
         this.mobile = mobile;
         this.email = email;
-        this.passwordUser = passwordUser;
-        this.registeredAt = registeredAt;
-        this.updatedAt = updatedAt;
+        this.address = address;
+    }
+
+    public User(int id, String fullName, String mobile, String email, int admin, int status, String urlImage) {
+        this.id = id;
+        this.fullName = fullName;
+        this.mobile = mobile;
+        this.email = email;
         this.admin = admin;
         this.status = status;
         this.urlImage = urlImage;
     }
 
-    public User(String fullName, String mobile, String email, String passwordUser, int admin, int status, String urlImage) {
+    public User(String fullName, String mobile, String email, String passwordUser, int admin, String address) {
         this.fullName = fullName;
         this.mobile = mobile;
         this.email = email;
         this.passwordUser = passwordUser;
         this.admin = admin;
-        this.status = status;
-        this.urlImage = urlImage;
+        this.address = address;
     }
 
-    public User(String fullName, String mobile, String email, String registeredAt, String updatedAt, int admin, int status, String urlImage) {
+    public User(int id, String fullName, String mobile, String email, String registeredAt, String updatedAt, int admin, int status, String address, String urlImage) {
+        this.id = id;
         this.fullName = fullName;
         this.mobile = mobile;
         this.email = email;
@@ -43,6 +49,7 @@ public class User {
         this.updatedAt = updatedAt;
         this.admin = admin;
         this.status = status;
+        this.address = address;
         this.urlImage = urlImage;
     }
 
@@ -124,5 +131,13 @@ public class User {
 
     public void setUrlImage(String urlImage) {
         this.urlImage = urlImage;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

@@ -145,7 +145,6 @@ public class ProductServlet extends HttpServlet {
         String strPrice = req.getParameter("price");
         String strQuantity = req.getParameter("quantity");
         String strCategory_id = req.getParameter("category_id");
-        String filename = req.getParameter("file");
         List<Category> categoryList = categoryService.findAll();
         req.setAttribute("categoryList",categoryList);
         List<String> errors = new ArrayList<>();
@@ -176,6 +175,17 @@ public class ProductServlet extends HttpServlet {
         if (!idCategoryIsNumber) {
             errors.add("Danh Mục Sản Phẩm Không Hợp Lệ");
         }
+
+        boolean checkFile = UploadFile.checkFile(req);
+        if (checkFile){
+            errors.add("Vui Lòng Chọn File");
+        }
+
+        boolean checkNoFile = UploadFile.checkNoFile(req);
+        if (!checkNoFile){
+            errors.add("File Không Hợp Lệ");
+        }
+
 
         if (errors.size() == 0) {
             boolean exist = categoryService.existById(Integer.parseInt(strCategory_id));

@@ -30,7 +30,8 @@ CREATE TABLE _user(
     _status BIT(1) NOT NULL,
     url_image NVARCHAR(255),
     CONSTRAINT pk_id PRIMARY KEY(id),
-    CONSTRAINT uq_email UNIQUE(email)
+    CONSTRAINT uq_email UNIQUE(email),
+    CONSTRAINT uq_mobile UNION (mobile)
 );
 
 CREATE TABLE _order(

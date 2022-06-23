@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <head>
     <meta charset="utf-8">
     <title>Upvex - Responsive Admin Dashboard Template</title>
@@ -73,30 +75,68 @@
 
                                     </div>
                                 </div>
-                                <form>
-                                    <div class="form-row">
-                                        <div class="form-group col-md-6">
-                                            <label for="inputEmail4" class="col-form-label">Full Name</label>
-                                            <input type="email" required class="form-control" id="inputEmail4" placeholder="Full Name">
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="inputPassword4" class="col-form-label">Email</label>
-                                            <input type="text" required class="form-control" id="inputPassword4" placeholder="Email">
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group col-md-6">
-                                            <label for="FullName" class="col-form-label">Mobile</label>
-                                            <input type="number" required class="form-control" id="FullName" placeholder="Mobile">
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="Mobile" class="col-form-label">Address</label>
-                                            <input type="password" required class="form-control" id="Mobile" placeholder="Address">
-                                        </div>
-                                    </div>
+                                <form method="post">
+                                    <c:choose>
+                                        <c:when test="${requestScope['userFind'] != null}">
+                                            <c:forEach items="${requestScope['userFind']}" var="item">
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-6">
+                                                        <label for="inputEmail4" class="col-form-label">Full Name</label>
+                                                        <input type="text" value="${item.getFullName()}" name="full_name" required class="form-control" id="inputEmail4" placeholder="Full Name">
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <label for="inputPassword4" class="col-form-label">Email</label>
+                                                        <input type="email"  value="${item.getEmail()}" name="email" required class="form-control" id="inputPassword4" placeholder="Email">
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-6">
+                                                        <label for="FullName" class="col-form-label">Mobile</label>
+                                                        <input type="text" name="mobile" value="${item.getMobile()}" required class="form-control" id="FullName" placeholder="Mobile">
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <label for="Mobile" class="col-form-label">Address</label>
+                                                        <input type="text" value="${item.getAddress()}" name="address" required class="form-control" id="Mobile" placeholder="Address">
+                                                    </div>
+                                                </div>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-6">
+                                                    <input type="hidden" value="${item.getId()}" name="id_user">
+                                                </div>
+                                            </div>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:when test="${requestScope['userFind'] == null}">
+                                            <div class="form-row">
+                                                <div class="form-group col-md-6">
+                                                    <label for="inputEmail41" class="col-form-label">Full Name</label>
+                                                    <input type="text" disabled name="full_name" required class="form-control" id="inputEmail41" placeholder="Full Name">
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label for="inputPassword41" class="col-form-label">Email</label>
+                                                    <input type="email" disabled name="email" required class="form-control" id="inputPassword41" placeholder="Email">
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-6">
+                                                    <label for="FullName1" class="col-form-label">Mobile</label>
+                                                    <input type="text" disabled name="mobile"  required class="form-control" id="FullName1" placeholder="Mobile">
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label for="Mobile1" class="col-form-label">Address</label>
+                                                    <input type="text" disabled name="address" required class="form-control" id="Mobile1" placeholder="Address">
+                                                </div>
+                                            </div>
+                                        </c:when>
+                                    </c:choose>
                                     <button type="submit" class="btn btn-primary waves-effect waves-light">Edit</button>
 
                                 </form>
+                                <ul style="margin-top: 20px;">
+                                    <c:forEach items="${requestScope['errors']}" var="err">
+                                        <li>${err}</li>
+                                    </c:forEach>
+                                </ul>
 
                             </div> <!-- end card-body -->
                         </div> <!-- end card-->

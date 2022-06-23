@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -73,43 +75,53 @@
 
                                     </div>
                                 </div>
-                                <form>
+                                <form method="post">
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label for="inputEmail4" class="col-form-label">Email</label>
-                                            <input type="email" required class="form-control" id="inputEmail4" placeholder="Email">
+                                            <input type="email" name="email" required class="form-control" id="inputEmail4" placeholder="Email">
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="inputPassword4" class="col-form-label">Password</label>
-                                            <input type="password" required class="form-control" id="inputPassword4" placeholder="Password">
+                                            <input type="password" name="password" required class="form-control" id="inputPassword4" placeholder="Password">
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label for="FullName" class="col-form-label">Full Name</label>
-                                            <input type="text" required class="form-control" id="FullName" placeholder="Full Name">
+                                            <input type="text" name="fullname" required class="form-control" id="FullName" placeholder="Full Name">
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="Mobile" class="col-form-label">Mobile</label>
-                                            <input type="number" required class="form-control" id="Mobile" placeholder="Mobile">
+                                            <input type="text" name="mobile" required class="form-control" id="Mobile" placeholder="Mobile">
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label for="Address" class="col-form-label">Address</label>
-                                            <input type="text" required class="form-control" id="Address" placeholder="Address">
+                                            <input type="text" name="address" required class="form-control" id="Address" placeholder="Address">
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="inputState" class="col-form-label">Role</label>
-                                            <select id="inputState" class="form-control">
-                                                <option>Admin</option>
-                                                <option>User</option>
+                                            <select id="inputState" name="role" class="form-control">
+                                                <option value="1">Admin</option>
+                                                <option value="0" >User</option>
                                             </select>
                                         </div>
                                     </div>
                                     <button type="submit" class="btn btn-primary waves-effect waves-light">Create</button>
 
                                 </form>
+                                <h6>
+                                    <c:if test="${requestScope['success'] == true}">
+                                        <c:out value="${'Thêm Sản Phẩm Thành Công'}"></c:out>
+                                    </c:if>
+                                </h6>
+                                <ul>
+                                    <c:forEach items="${requestScope['errors']}" var="err">
+                                        <li>${err}</li>
+                                    </c:forEach>
+                                </ul>
 
                             </div> <!-- end card-body -->
                         </div> <!-- end card-->
