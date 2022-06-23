@@ -102,8 +102,97 @@ public class UserServlet extends HttpServlet {
         }
     }
 
-    private void doEditUser(HttpServletRequest req, HttpServletResponse resp) {
-        
+    private void doEditUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/user/edit.jsp");
+        String idUser = req.getParameter("id_user");
+        String fullName = req.getParameter("full_name");
+        String email = req.getParameter("email");
+        String mobile = req.getParameter("mobile");
+        String address = req.getParameter("address");
+        List<String> errors = new ArrayList<>();
+
+        if (idUser == null) {
+            errors.add("Id Không tồn tại");
+        }
+        if (fullName.equals("")){
+            errors.add("Không Được Để Trống Tên");
+        }
+        if (email.equals("")){
+            errors.add("Không Được Để Trống Email");
+        }
+        if (mobile.equals("")){
+            errors.add("Không Được Để Trống Email");
+        }
+        if (address.equals("")) {
+            errors.add("Không Được Để Trống Địa Chỉ Khách Hàng");
+        }
+
+        boolean checkEmail = Validate.isEmail(email);
+        if (!checkEmail) {
+            errors.add("Email Không Hợp Lệ");
+        }
+
+        boolean checkMobile = Validate.isPhone(mobile);
+        if (!checkMobile) {
+            errors.add("Số Điện Thoại Không Hợp Lệ");
+        }
+        boolean success = false;
+        String message = "";
+        boolean idIsNumber = Validate.isNumberValid(idUser);
+        if (!idIsNumber) {
+            errors.add("Id Không Hợp Lệ");
+        }else {
+            boolean existsById = service.existsById(Integer.parseInt(idUser));
+            if (!existsById) {
+                errors.add("Id Không Tồn Tại Trên Hệ Thống");
+            }else {
+                List<User> userListFindStatus = service.findStatusUserId(Integer.parseInt(idUser));
+                if (userListFindStatus.get(0).getStatus() == 0) {
+                    errors.add("Người Dùng Đang Bị Khóa, Vui Lòng Thay Đổi Trạng Thái  Để Sửa Thông Tin");
+                }else {
+                    List<User> userList = service.findUserId(Integer.parseInt(idUser));
+                    boolean existsEmail = service.existsByEmail(email);
+                    if (!userList.get(0).getEmail().equals(email) && existsEmail == true) {
+                        errors.add("Email Đã Tồn Tại Vui Lòng Nhập Email Khác");
+                    }
+
+                    boolean existsMobile = service.existsByMobile(mobile);
+                    if (!userList.get(0).getMobile().equals(mobile) && existsMobile == true) {
+                        errors.add("Số Điện Thoại Đã Tồn Tại Vui Lòng Nhập Số Điện Thoại Khác");
+                    }
+                    if (errors.size() == 0) {
+                        User user = new User(Integer.parseInt(idUser),fullName,mobile,email,address);
+                        Map<String, String> result = service.update(user);
+                        success = Boolean.parseBoolean(result.get("success"));
+                        message = result.get("message");
+                        if (!success) {
+                            errors.add(message);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        if (errors.size() == 0) {
+            if (success) {
+                req.setAttribute("success", true);
+                req.setAttribute("message",message);
+            }
+            else {
+                errors.add("Sửa Thông Tin Người Dùng Thất Bại");
+            }
+        }
+
+        if (errors.size()>0){
+            req.setAttribute("errors",errors);
+        }
+
+        dispatcher.forward(req,resp);
+
+
+
+
     }
 
     private void doCreateUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

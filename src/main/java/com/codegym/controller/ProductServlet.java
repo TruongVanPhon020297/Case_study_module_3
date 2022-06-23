@@ -179,13 +179,12 @@ public class ProductServlet extends HttpServlet {
         boolean checkFile = UploadFile.checkFile(req);
         if (checkFile){
             errors.add("Vui Lòng Chọn File");
+        }else {
+            boolean checkNoFile = UploadFile.checkNoFile(req);
+            if (!checkNoFile){
+                errors.add("File Không Hợp Lệ");
+            }
         }
-
-        boolean checkNoFile = UploadFile.checkNoFile(req);
-        if (!checkNoFile){
-            errors.add("File Không Hợp Lệ");
-        }
-
 
         if (errors.size() == 0) {
             boolean exist = categoryService.existById(Integer.parseInt(strCategory_id));

@@ -137,6 +137,11 @@
                                         <li>${err}</li>
                                     </c:forEach>
                                 </ul>
+                                <h6>
+                                    <c:if test="${requestScope['success'] == true}">
+                                        ${"Sửa Thông Tin Thành Công"}
+                                    </c:if>
+                                </h6>
 
                             </div> <!-- end card-body -->
                         </div> <!-- end card-->

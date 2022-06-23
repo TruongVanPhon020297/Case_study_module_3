@@ -23,6 +23,7 @@ public class UserServiceImpl implements UserService{
     private static final String EXIST_USER_ID = "SELECT COUNT(*) AS count FROM _user AS u WHERE u.id = ?;";
     private static final String FIND_STATUS_USER_ID = "SELECT * FROM _user WHERE id = ?;";
     private static final String UPDATE_STATUS_USER = "UPDATE _user SET _status = ? WHERE id = ?;";
+    private static final String SP_UPDATE_USER = "{CALL sp_update_user(?, ?, ?, ?, ?, ?, ?)}";
     @Override
     public List<User> findAll() {
         return null;
@@ -30,7 +31,30 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public Map<String, String> update(User user) {
-        return null;
+        Map<String, String> result = new HashMap<>();
+        try {
+            Connection connection = MySQLConnUtils.getConnection();
+
+            CallableStatement statement = connection.prepareCall(SP_UPDATE_USER);
+            statement.setInt(1,user.getId());
+            statement.setString(2,user.getFullName());
+            statement.setString(3,user.getEmail());
+            statement.setString(4,user.getMobile());
+            statement.setString(5,user.getAddress());
+            statement.registerOutParameter(6, Types.BOOLEAN);
+            statement.registerOutParameter(7, Types.VARCHAR);
+            statement.execute();
+
+            Boolean success = statement.getBoolean("success");
+            String message = statement.getString("message");
+
+            result.put("success", success.toString());
+            result.put("message", message);
+
+        } catch (SQLException e) {
+            MySQLConnUtils.printSQLException(e);
+        }
+        return result;
     }
 
     @Override
