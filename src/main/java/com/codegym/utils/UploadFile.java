@@ -50,5 +50,4 @@ public class UploadFile {
         }
         return check;
     }
-
 }

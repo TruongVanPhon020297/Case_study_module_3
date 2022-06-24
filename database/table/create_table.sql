@@ -31,7 +31,7 @@ CREATE TABLE _user(
     url_image NVARCHAR(255),
     CONSTRAINT pk_id PRIMARY KEY(id),
     CONSTRAINT uq_email UNIQUE(email),
-    CONSTRAINT uq_mobile UNION (mobile)
+    CONSTRAINT uq_mobile UNIQUE (mobile)
 );
 
 CREATE TABLE _order(

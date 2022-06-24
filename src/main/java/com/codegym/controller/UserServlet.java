@@ -222,14 +222,19 @@ public class UserServlet extends HttpServlet {
         if (strRole.equals("")){
             errors.add("Không Được Để Trống Role");
         }
-        boolean checkMobile = Validate.isPhone(strMobile);
-        if (!checkMobile) {
-            errors.add("Số Điện Thoại Không Hợp Lệ");
-        }
 
         boolean passwordIsValidate = Validate.isPasswordValid(password);
         if (!passwordIsValidate) {
             errors.add("Mật Khẩu Không Đúng Định Dạng");
+        }
+
+        if (fullName.length() < 3 || fullName.length() > 255) {
+            errors.add("Tên Sản Phẩm Không Hợp Lệ");
+        }
+
+        boolean checkMobile = Validate.isPhone(strMobile);
+        if (!checkMobile) {
+            errors.add("Số Điện Thoại Không Hợp Lệ");
         }
 
         boolean roleIsNumber = Validate.isNumberValid(strRole);
@@ -260,13 +265,9 @@ public class UserServlet extends HttpServlet {
             String message = result.get("message");
             if (!success){
                 errors.add(message);
+            }else {
+                req.setAttribute("success", true);
             }
-        }
-        if (success) {
-            req.setAttribute("success", true);
-        } else {
-            req.setAttribute("error", true);
-            errors.add("Thêm Sản Phẩm Thất Bại");
         }
         if (errors.size() > 0){
             req.setAttribute("errors",errors);

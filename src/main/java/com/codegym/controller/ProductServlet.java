@@ -64,22 +64,23 @@ public class ProductServlet extends HttpServlet {
         String title = req.getParameter("title");
         String strPrice = req.getParameter("price");
         String strQuantity = req.getParameter("quantity");
-        String urlFile = UploadFile.uploadImagesServer(req);
         String strCategoryId = req.getParameter("category_id");
-        List<Category> categoryList = categoryService.findAll();
-        req.setAttribute("categoryList",categoryList);
         List<String> errors = new ArrayList<>();
-        if(title.equals("")) {
+        if (title.equals("")) {
             errors.add("Không Được Để Trống Tiêu Đề Sản Phẩm");
         }
-        if(strPrice.equals("")) {
+        if (strPrice.equals("")) {
             errors.add("Không Được Để Trống Giá Sản Phẩm");
         }
         if (strQuantity.equals("")) {
             errors.add("Không Được Để Trống Số Lượng Sản Phẩm");
         }
-        if(strCategoryId.equals("")) {
+        if (strCategoryId.equals("")) {
             errors.add("Vui Lòng Chọn Danh Mục Sản Phẩm");
+        }
+
+        if (title.length() > 255 || title.length() < 3) {
+            errors.add("Tiêu Đề Sản Phẩm Không Hợp Lệ");
         }
 
         boolean priceIsNumber = Validate.isNumberValid(strPrice);
@@ -88,7 +89,7 @@ public class ProductServlet extends HttpServlet {
         }
 
         boolean quantityIsNumber = Validate.isNumberValid(strQuantity);
-        if (!quantityIsNumber || Integer.parseInt(strQuantity) < 0) {
+        if (!quantityIsNumber || Integer.parseInt(strQuantity) < 0 || strQuantity.length() > 10) {
             errors.add("Số Lượng Sản Phẩm Không Hợp Lệ");
         }
 
@@ -97,47 +98,87 @@ public class ProductServlet extends HttpServlet {
             errors.add("Danh Mục Sản Phẩm Không Hợp Lệ");
         }
 
-        boolean strIdProductIsNumber  = Validate.isNumberValid(strIdProduct);
+        boolean strIdProductIsNumber = Validate.isNumberValid(strIdProduct);
         if (!strIdProductIsNumber) {
             errors.add("Id Sản Phẩm Không Hợp Lệ");
         }
 
-        if (errors.size() == 0) {
-            boolean exists = productService.existsById(Integer.parseInt(strIdProduct));
-            boolean success = false;
-            String message = "";
+
+        boolean checkFile = UploadFile.checkFile(req);
+        boolean exists = productService.existsById(Integer.parseInt(strIdProduct));
+        boolean success = false;
+        String message = "";
+        if (checkFile == true) {
             if (exists) {
                 boolean existsCategory = categoryService.existById(Integer.parseInt(strCategoryId));
-                if (existsCategory){
-                    Product product = new Product(Integer.parseInt(strIdProduct),title,urlFile,BigDecimal.valueOf(Integer.parseInt(strPrice)),Integer.parseInt(strQuantity),Integer.parseInt(strCategoryId));
-                    Map<String, String> result = productService.update(product);
-                    success = Boolean.parseBoolean(result.get("success"));
-                    message = result.get("message");
-                    if (!success){
-                        errors.add(message);
+                if (existsCategory) {
+                    List<Product> productStatus = service.findStatusProductId(Integer.parseInt(strIdProduct));
+                    if (productStatus.get(0).getStopSelling() == 1){
+                        errors.add("Sản Phẩm Đang Dừng Bán, Vui Lòng Thay Đổi Trạng Thái Của Sản Phẩm Để Sửa Thông Tin");
+                    }else {
+                        if (errors.size() == 0){
+                            Product product = new Product(Integer.parseInt(strIdProduct), title, BigDecimal.valueOf(Integer.parseInt(strPrice)), Integer.parseInt(strQuantity), Integer.parseInt(strCategoryId));
+                            Map<String, String> result = productService.updateNo(product);
+                            success = Boolean.parseBoolean(result.get("success"));
+                            message = result.get("message");
+                            if (!success) {
+                                errors.add(message);
+                            }
+                        }
                     }
-                }else {
+                    if (success){
+                        req.setAttribute("message",message);
+                    }
+                } else {
                     errors.add("Danh Mục Sản Phẩm Không Tồn Tại");
                 }
-            } else {
-                errors.add("Sản Phẩm Không Tồn Tại");
+            }else {
+                errors.add("Id Không tồn Tại");
             }
-            if (success) {
-                req.setAttribute("success", true);
-                req.setAttribute("message",message);
+        } else {
+                boolean checkNoFile = UploadFile.checkNoFile(req);
+                if (!checkNoFile) {
+                    errors.add("File Không Hợp Lệ");
+                }else {
+                    if (exists) {
+                        boolean existsCategory = categoryService.existById(Integer.parseInt(strCategoryId));
+                        String urlFile = UploadFile.uploadImagesServer(req);
+                        if (existsCategory) {
+                            List<Product> productStatus = service.findStatusProductId(Integer.parseInt(strIdProduct));
+                            if (productStatus.get(0).getStopSelling() == 1){
+                                errors.add("Sản Phẩm Đang Dừng Bán, Vui Lòng Thay Đổi Trạng Thái Của Sản Phẩm Để Sửa Thông Tin");
+                            }else {
+                                if (errors.size() == 0){
+                                    Product product = new Product(Integer.parseInt(strIdProduct), title, urlFile,BigDecimal.valueOf(Integer.parseInt(strPrice)), Integer.parseInt(strQuantity), Integer.parseInt(strCategoryId));
+                                    Map<String, String> result = productService.update(product);
+                                    success = Boolean.parseBoolean(result.get("success"));
+                                    message = result.get("message");
+                                    if (!success) {
+                                        errors.add(message);
+                                    }
+                                }
+                                if (success){
+                                    req.setAttribute("message",message);
+                                }
+                            }
+                        } else {
+                            errors.add("Danh Mục Sản Phẩm Không Tồn Tại");
+                        }
+                    }else {
+                        errors.add("Id Không tồn Tại");
+                    }
+                }
             }
-            else {
-                req.setAttribute("error", true);
-                errors.add("Sửa Thông Tin Sản Phẩm Thất Bại");
+
+            if (errors.size() > 0) {
+                req.setAttribute("errors", errors);
+                List<Product> productFind = productService.findProductId(Integer.parseInt(strIdProduct));
+                req.setAttribute("productFind", productFind);
             }
+            List<Category> categoryList = categoryService.findAll();
+            req.setAttribute("categoryList", categoryList);
+            dispatcher.forward(req, resp);
         }
-        if (errors.size() > 0){
-            req.setAttribute("errors",errors);
-            List<Product> productFind = productService.findProductId(Integer.parseInt(strIdProduct));
-            req.setAttribute("productFind",productFind);
-        }
-        dispatcher.forward(req,resp);
-    }
 
     private void createUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         RequestDispatcher dispatcher = req.getRequestDispatcher("product/create.jsp");
@@ -161,19 +202,18 @@ public class ProductServlet extends HttpServlet {
             errors.add("Vui Lòng Chọn Danh Mục Sản Phẩm");
         }
 
+        if(title.length() > 255 || title.length() < 3) {
+            errors.add("Tiêu Đề Sản Phẩm Không Hợp Lệ");
+        }
+
         boolean priceIsNumber = Validate.isNumberValid(strPrice);
         if (!priceIsNumber || strPrice.length() > 12 || Integer.parseInt(strPrice) < 0) {
             errors.add("Giá Của Sản Phẩm Không Hợp Lệ");
         }
 
         boolean quantityIsNumber = Validate.isNumberValid(strQuantity);
-        if (!quantityIsNumber || Integer.parseInt(strQuantity) < 0) {
+        if (!quantityIsNumber || Integer.parseInt(strQuantity) < 0 || Integer.parseInt(strQuantity) > 2147483647) {
             errors.add("Số Lượng Sản Phẩm Không Hợp Lệ");
-        }
-
-        boolean idCategoryIsNumber = Validate.isNumberValid(strCategory_id);
-        if (!idCategoryIsNumber) {
-            errors.add("Danh Mục Sản Phẩm Không Hợp Lệ");
         }
 
         boolean checkFile = UploadFile.checkFile(req);
@@ -184,6 +224,11 @@ public class ProductServlet extends HttpServlet {
             if (!checkNoFile){
                 errors.add("File Không Hợp Lệ");
             }
+        }
+
+        boolean idCategoryIsNumber = Validate.isNumberValid(strCategory_id);
+        if (!idCategoryIsNumber) {
+            errors.add("Danh Mục Sản Phẩm Không Hợp Lệ");
         }
 
         if (errors.size() == 0) {
@@ -197,16 +242,11 @@ public class ProductServlet extends HttpServlet {
                 String message = result.get("message");
                 if (!success){
                     errors.add(message);
+                }else {
+                    req.setAttribute("success", true);
                 }
             }else {
                 errors.add("Danh Mục Sản Phẩm Không tồn tại");
-            }
-            if (success) {
-                req.setAttribute("success", true);
-            }
-            else {
-                req.setAttribute("error", true);
-                errors.add("Thêm Sản Phẩm Thất Bại");
             }
         }
         if (errors.size() > 0){

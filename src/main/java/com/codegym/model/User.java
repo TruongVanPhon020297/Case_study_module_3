@@ -53,6 +53,16 @@ public class User {
         this.urlImage = urlImage;
     }
 
+    public User(int id, String fullName, String mobile, String email, String passwordUser, int admin, int status) {
+        this.id = id;
+        this.fullName = fullName;
+        this.mobile = mobile;
+        this.email = email;
+        this.passwordUser = passwordUser;
+        this.admin = admin;
+        this.status = status;
+    }
+
     public int getId() {
         return id;
     }

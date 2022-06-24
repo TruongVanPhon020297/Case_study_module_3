@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="C" uri="http://java.sun.com/jsp/jstl/core" %>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -36,22 +39,27 @@
 
                         <h5 class="auth-title">Sign In</h5>
 
-                        <form action="#">
+                        <form action="/login" method="post">
 
                             <div class="form-group mb-3">
                                 <label for="emailaddress">Email address</label>
-                                <input class="form-control" type="email" id="emailaddress" required="" placeholder="Enter your email">
+                                <input class="form-control" type="email" name="email" id="emailaddress" required="" placeholder="Enter your email">
                             </div>
 
                             <div class="form-group mb-3">
                                 <label for="password">Password</label>
-                                <input class="form-control" type="password" required="" id="password" placeholder="Enter your password">
+                                <input class="form-control" type="password" name="password" required="" id="password" placeholder="Enter your password">
                             </div>
 
                             <div class="form-group mb-0 text-center">
                                 <button class="btn btn-danger btn-block" type="submit"> Log In </button>
                             </div>
                         </form>
+                        <ul style="margin-top: 20px">
+                            <c:forEach items="${requestScope['errors']}" var="item">
+                                <li>${item}</li>
+                            </c:forEach>
+                        </ul>
                     </div> <!-- end card-body -->
                 </div>
                 <!-- end card -->

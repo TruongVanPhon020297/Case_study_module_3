@@ -8,4 +8,5 @@ import java.util.Map;
 public interface ProductService extends IGeneralService<Product>{
     boolean existsById(int productId);
     List<Product> findProductId(int id);
+    Map<String, String> updateNo(Product product);
 }

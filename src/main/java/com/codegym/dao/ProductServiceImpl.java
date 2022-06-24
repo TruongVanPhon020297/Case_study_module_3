@@ -23,6 +23,7 @@ public class ProductServiceImpl implements ProductService{
     private static final String SELECT_ALL_PRODUCT_PAGE = "SELECT SQL_CALC_FOUND_ROWS * FROM product WHERE id LIMIT ?,?";
     private static final String SP_SEARCH_PRODUCT = "{CALL sp_search_product(?)}";
     private static final String UPDATE_STATUS_PRODUCT = "UPDATE product SET stop_selling = ? WHERE id = ?;";
+    private static final String SP_UPDATE_PRODUCT_NO = "{CALL sp_update_product_not_image(?, ?, ?, ?, ?, ?, ?)}";
     @Override
     public List<Product> findAll() {
         List<Product> productList = new ArrayList<>();
@@ -157,6 +158,36 @@ public class ProductServiceImpl implements ProductService{
         }
         return productList;
     }
+
+    @Override
+    public Map<String, String> updateNo(Product product) {
+        Map<String, String> result = new HashMap<>();
+        try {
+            Connection connection = MySQLConnUtils.getConnection();
+
+            CallableStatement statement = connection.prepareCall(SP_UPDATE_PRODUCT_NO);
+            statement.setInt(1,product.getId());
+            statement.setString(2,product.getTitle());
+            statement.setBigDecimal(3,product.getPrice());
+            statement.setInt(4,product.getQuantity());
+            statement.setInt(5,product.getIdCategory());
+            statement.registerOutParameter(6, Types.BOOLEAN);
+            statement.registerOutParameter(7, Types.VARCHAR);
+            statement.execute();
+
+            Boolean success = statement.getBoolean("success");
+            String message = statement.getString("message");
+
+            result.put("success", success.toString());
+            result.put("message", message);
+
+        } catch (SQLException e) {
+            MySQLConnUtils.printSQLException(e);
+        }
+        return result;
+
+    }
+
     public List<Product> findStatusProductId(int id) {
         List<Product> productList = new ArrayList<>();
         try(
