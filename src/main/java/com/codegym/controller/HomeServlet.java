@@ -14,8 +14,19 @@ public class HomeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         RequestDispatcher dispatcher = req.getRequestDispatcher("home.jsp");
-        dispatcher.forward(req,resp);
-        Cookie[] cookies = null;
-        cookies = req.getCookies();
+        String email = "";
+        Cookie[] cookies = req.getCookies();
+
+        for (Cookie c : cookies) {
+            if (c.getName().equals("email")){
+                email = c.getValue();
+                System.out.println(email);
+            }
+        }
+        if (email.equals("")){
+            resp.sendRedirect("/login");
+        }else {
+            dispatcher.forward(req,resp);
+        }
     }
 }

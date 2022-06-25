@@ -27,7 +27,20 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         RequestDispatcher dispatcher = req.getRequestDispatcher("login.jsp");
-        dispatcher.forward(req,resp);
+        String email = "";
+        Cookie[] cookies = req.getCookies();
+
+        for (Cookie c : cookies) {
+            if (c.getName().equals("email")){
+                email = c.getValue();
+                System.out.println(email);
+            }
+        }
+        if (email.equals("")){
+            dispatcher.forward(req,resp);
+        }else {
+            resp.sendRedirect("/homepage");
+        }
     }
 
     @Override
@@ -61,20 +74,17 @@ public class LoginServlet extends HttpServlet {
             errors.add("Email Không Tồn Tại");
         }
 
-        if (errors.size() == 0) {
-            Cookie emailLogin = new Cookie("email",email);
-            emailLogin.setMaxAge(60 * 60 * 24);
-            resp.addCookie(emailLogin);
-            Cookie passwordLogin = new Cookie("password",password);
-            passwordLogin.setMaxAge(60 * 60 * 24);
-            resp.addCookie(emailLogin);
-            resp.sendRedirect("/homepage");
-        }
-
         if (errors.size() > 0) {
             req.setAttribute("errors",errors);
             dispatcher.forward(req,resp);
         }
 
+        if (errors.size() == 0) {
+            List<User> userList = loginService.findUserByEmail(email);
+            Cookie email1 = new Cookie("email",email);
+            email1.setMaxAge(60*5);
+            resp.addCookie(email1);
+            resp.sendRedirect("/homepage");
+        }
     }
 }

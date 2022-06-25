@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,19 +38,32 @@ public class UserServlet extends HttpServlet {
         if (action == null) {
             action = "";
         }
-        switch (action) {
-            case "create" :
-                createUser(req,resp);
-                break;
-            case "edit" :
-                editUser(req,resp);
-                break;
-            case "block":
-                blockUser(req, resp);
-                break;
-            default:
-                listUser(req,resp);
-                break;
+        String email = "";
+        Cookie[] cookies = req.getCookies();
+
+        for (Cookie c : cookies) {
+            if (c.getName().equals("email")){
+                email = c.getValue();
+                System.out.println(email);
+            }
+        }
+        if (email.equals("")){
+            resp.sendRedirect("/login");
+        }else {
+            switch (action) {
+                case "create":
+                    createUser(req, resp);
+                    break;
+                case "edit":
+                    editUser(req, resp);
+                    break;
+                case "block":
+                    blockUser(req, resp);
+                    break;
+                default:
+                    listUser(req, resp);
+                    break;
+            }
         }
     }
 
