@@ -82,7 +82,7 @@ public class LoginServlet extends HttpServlet {
         if (errors.size() == 0) {
             List<User> userList = loginService.findUserByEmail(email);
             Cookie email1 = new Cookie("email",email);
-            email1.setMaxAge(60*5);
+            email1.setMaxAge(60*5*60);
             resp.addCookie(email1);
             resp.sendRedirect("/homepage");
         }

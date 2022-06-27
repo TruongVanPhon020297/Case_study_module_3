@@ -48,10 +48,10 @@
                     </a>
                     <ul class="nav-second-level" aria-expanded="false">
                         <li>
-                            <a href="email-inbox.html">Create Oder</a>
+                            <a href="/order?action=create">Create Oder</a>
                         </li>
                         <li>
-                            <a href="email-inbox.html">List Oder</a>
+                            <a href="/order">List Oder</a>
                         </li>
                     </ul>
                 </li>
