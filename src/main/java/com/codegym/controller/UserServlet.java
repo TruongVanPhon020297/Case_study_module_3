@@ -2,10 +2,8 @@ package com.codegym.controller;
 
 import com.codegym.dao.UserService;
 import com.codegym.dao.UserServiceImpl;
-import com.codegym.model.Category;
-import com.codegym.model.Product;
 import com.codegym.model.User;
-import com.codegym.utils.Validate;
+import com.codegym.utils.ValidateUtils;
 import com.google.gson.Gson;
 
 import javax.servlet.RequestDispatcher;
@@ -141,18 +139,18 @@ public class UserServlet extends HttpServlet {
             errors.add("Không Được Để Trống Địa Chỉ Khách Hàng");
         }
 
-        boolean checkEmail = Validate.isEmail(email);
+        boolean checkEmail = ValidateUtils.isEmail(email);
         if (!checkEmail) {
             errors.add("Email Không Hợp Lệ");
         }
 
-        boolean checkMobile = Validate.isPhone(mobile);
+        boolean checkMobile = ValidateUtils.isPhone(mobile);
         if (!checkMobile) {
             errors.add("Số Điện Thoại Không Hợp Lệ");
         }
         boolean success = false;
         String message = "";
-        boolean idIsNumber = Validate.isNumberValid(idUser);
+        boolean idIsNumber = ValidateUtils.isNumberValid(idUser);
         if (!idIsNumber) {
             errors.add("Id Không Hợp Lệ");
         }else {
@@ -237,7 +235,7 @@ public class UserServlet extends HttpServlet {
             errors.add("Không Được Để Trống Role");
         }
 
-        boolean passwordIsValidate = Validate.isPasswordValid(password);
+        boolean passwordIsValidate = ValidateUtils.isPasswordValid(password);
         if (!passwordIsValidate) {
             errors.add("Mật Khẩu Không Đúng Định Dạng");
         }
@@ -246,17 +244,17 @@ public class UserServlet extends HttpServlet {
             errors.add("Tên Sản Phẩm Không Hợp Lệ");
         }
 
-        boolean checkMobile = Validate.isPhone(strMobile);
+        boolean checkMobile = ValidateUtils.isPhone(strMobile);
         if (!checkMobile) {
             errors.add("Số Điện Thoại Không Hợp Lệ");
         }
 
-        boolean roleIsNumber = Validate.isNumberValid(strRole);
+        boolean roleIsNumber = ValidateUtils.isNumberValid(strRole);
         if (!roleIsNumber || Integer.parseInt(strRole) < 0 || Integer.parseInt(strRole) > 1){
             errors.add("Loại Tài Khoản Không Hợp Lệ");
         }
 
-        boolean checkIsEmail = Validate.isEmail(email);
+        boolean checkIsEmail = ValidateUtils.isEmail(email);
         if (!checkIsEmail){
             errors.add("Email Không Hợp Lệ");
         }
@@ -292,7 +290,7 @@ public class UserServlet extends HttpServlet {
     private void editUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         RequestDispatcher dispatcher = req.getRequestDispatcher("user/edit.jsp");
         String strUserId = req.getParameter("id");
-        boolean userIdIsNumber = Validate.isNumberValid(strUserId);
+        boolean userIdIsNumber = ValidateUtils.isNumberValid(strUserId);
         List<String> errors = new ArrayList<>();
         if (!userIdIsNumber){
             errors.add("Id Người Dùng Không Hợp Lệ");
@@ -328,7 +326,7 @@ public class UserServlet extends HttpServlet {
             req.setAttribute("message","Kết Quả Tìm Kiếm");
         }else {
             if( strPage != null){
-                boolean pageIsNumber = Validate.isNumberValid(req.getParameter("page"));
+                boolean pageIsNumber = ValidateUtils.isNumberValid(req.getParameter("page"));
                 if (!pageIsNumber) {
                     error.add("Page Không Hợp Lệ");
                 }else {

@@ -20,6 +20,7 @@
     <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css">
     <link href="assets/css/app.min.css" rel="stylesheet" type="text/css">
     <link href="assets/css/css-my-style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/assets/iziToast/iziToast-1.4.0.min.css">
 
 </head>
 
@@ -57,7 +58,7 @@
                                     <li class="breadcrumb-item active">Dashboard</li>
                                 </ol>
                             </div>
-                            <h4 class="page-title">Well Come Create Product</h4>
+                            <h4 class="page-title">Wel Come Create Order</h4>
                         </div>
                     </div>
                 </div>
@@ -70,16 +71,16 @@
                                 <form method="post" enctype="multipart/form-data">
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
-                                            <label for="inputState" class="col-form-label">Category</label>
-                                            <select id="inputState" class="form-control" name="category_id">
+                                            <label for="category_id" class="col-form-label">Category</label>
+                                            <select id="category_id" class="form-control" name="category_id">
                                                 <c:forEach items="${requestScope['categoryList']}" var="item">
                                                     <option value="${item.getId()}">${item.getTitle()}</option>
                                                 </c:forEach>
                                             </select>
                                         </div>
                                         <div class="form-group col-md-6">
-                                            <label for="inputState1" class="col-form-label">Product</label>
-                                            <select id="inputState1" class="form-control" name="category_id">
+                                            <label for="product_id" class="col-form-label">Product</label>
+                                            <select id="product_id" class="form-control" name="product_id">
                                                 <c:forEach items="${requestScope['categoryList']}" var="item">
                                                     <option value="${item.getId()}">${item.getTitle()}</option>
                                                 </c:forEach>
@@ -88,15 +89,15 @@
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
-                                            <label for="inputEmail4" class="col-form-label">Quantity</label>
-                                            <input type="number" value="1" min="1" required class="form-control" id="inputEmail4"  name="title" aria-required="true">
+                                            <label for="quantity" class="col-form-label">Quantity</label>
+                                            <input type="number" value="1" min="1" required class="form-control" id="quantity"  name="quantity" aria-required="true">
                                         </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="inputPassword4" class="col-form-label">Price</label>
-                                            <input type="number"  required class="form-control" id="inputPassword4" placeholder="Price" name="price" min="0" aria-required="true">
-                                        </div>
+<%--                                        <div class="form-group col-md-6">--%>
+<%--                                            <label for="inputPassword4" class="col-form-label">Price</label>--%>
+<%--                                            <input type="number"  required class="form-control" id="inputPassword4" placeholder="Price" name="price" min="0" aria-required="true">--%>
+<%--                                        </div>--%>
                                     </div>
-                                    <button type="submit" class="btn btn-primary waves-effect waves-light">Add</button>
+                                    <button type="button" id="btnAdd" class="btn btn-primary waves-effect waves-light">Add</button>
                                 </form>
                                 <h6>
                                     <c:if test="${requestScope['success'] == true}">
@@ -137,6 +138,69 @@
 <div class="rightbar-overlay"></div>
 
 <jsp:include page="../shared/script.jsp"></jsp:include>
+
+<script src="/assets/iziToast/iziToast-1.4.0.js"></script>
+
+<script>
+    let btnAdd = document.getElementById('btnAdd');
+    let categoryId = document.getElementById('category_id');
+    let productId = document.getElementById('product_id');
+    let quantity = document.getElementById('quantity');
+
+    btnAdd.addEventListener('click', function () {
+        addCart(productId.value, quantity.value);
+    })
+
+    categoryId.addEventListener('change', function () {
+        getAllProductsByCategory(categoryId.value);
+    })
+
+    function getAllProductsByCategory(categoryId) {
+        fetch('http://localhost:8089/api/products?action=get-all-products&category=' + categoryId)
+            .then(response => response.json())
+            .then(data => {
+                let str = '';
+
+                if (data != null) {
+                    data.forEach((item, index) => {
+                        str += `<option value="\${item.id}">\${item.title} (\${item.price})</option>`;
+                    })
+                    productId.innerHTML = str;
+                }
+                else {
+                    productId.innerHTML = '';
+                }
+            });
+    }
+
+    function addCart(productId, quantity) {
+        fetch('http://localhost:8089/api/carts?action=add&product_id=' + productId + '&quantity=' + quantity)
+            .then(response => response.json())
+            .then(data => {
+
+                if (data.success === "true") {
+                    iziToast.success({
+                        title: 'SUCCESS',
+                        position: 'bottomRight',
+                        timeout: 2500,
+                        message: data.message
+                    });
+                }
+                else {
+                    iziToast.error({
+                        title: 'ERROR',
+                        position: 'bottomRight',
+                        timeout: 2500,
+                        message: data.message
+                    });
+                }
+
+
+            });
+    }
+
+
+</script>
 
 </body>
 </html>

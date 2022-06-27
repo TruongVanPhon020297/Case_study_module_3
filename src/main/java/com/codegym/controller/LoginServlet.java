@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(name = "LoginServlet",urlPatterns = "/login")
+@WebServlet(name = "LoginServlet", urlPatterns = "/login")
 public class LoginServlet extends HttpServlet {
     LoginService loginService;
 
@@ -31,14 +31,14 @@ public class LoginServlet extends HttpServlet {
         Cookie[] cookies = req.getCookies();
 
         for (Cookie c : cookies) {
-            if (c.getName().equals("email")){
+            if (c.getName().equals("email")) {
                 email = c.getValue();
                 System.out.println(email);
             }
         }
-        if (email.equals("")){
-            dispatcher.forward(req,resp);
-        }else {
+        if (email.equals("")) {
+            dispatcher.forward(req, resp);
+        } else {
             resp.sendRedirect("/homepage");
         }
     }
@@ -57,33 +57,35 @@ public class LoginServlet extends HttpServlet {
         }
 
         boolean existEmail = loginService.existsEmail(email);
-        if (existEmail){
+        if (existEmail) {
             List<User> userList = loginService.findUserByEmail(email);
             if (userList.get(0).getAdmin() == 0) {
                 errors.add("Tài Khoản Không Phải Admin Để Đăng Nhập Vào Hệ Thống Này");
-            }else {
+            } else {
                 if (userList.get(0).getStatus() == 0) {
                     errors.add("Tài Khoản Đang Bị Khóa Không Thể Đăng Nhập");
-                }else {
-                    if (!userList.get(0).getPasswordUser().equals(password)){
+                } else {
+                    if (!userList.get(0).getPasswordUser().equals(password)) {
                         errors.add("Sai Mật Khẩu Vui Lòng Kiểm Tra Lại Mật Khẩu");
                     }
                 }
             }
-        }else {
+        } else {
             errors.add("Email Không Tồn Tại");
         }
 
         if (errors.size() > 0) {
-            req.setAttribute("errors",errors);
-            dispatcher.forward(req,resp);
+            req.setAttribute("errors", errors);
+            dispatcher.forward(req, resp);
         }
 
         if (errors.size() == 0) {
             List<User> userList = loginService.findUserByEmail(email);
-            Cookie email1 = new Cookie("email",email);
-            email1.setMaxAge(60*5*60);
+            Cookie email1 = new Cookie("email", email);
+            Cookie ckUserId = new Cookie("userId", String.valueOf(userList.get(0).getId()));
+            email1.setMaxAge(60 * 5 * 60);
             resp.addCookie(email1);
+            resp.addCookie(ckUserId);
             resp.sendRedirect("/homepage");
         }
     }

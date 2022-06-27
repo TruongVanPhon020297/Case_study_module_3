@@ -21,6 +21,8 @@
     <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css">
     <link href="assets/css/app.min.css" rel="stylesheet" type="text/css">
     <link href="assets/css/css-my-style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/assets/iziToast/iziToast-1.4.0.min.css">
+    <script src="/assets/iziToast/iziToast-1.4.0.js"></script>
 
 </head>
 
@@ -58,7 +60,7 @@
                                     <li class="breadcrumb-item active">Dashboard</li>
                                 </ol>
                             </div>
-                            <h4 class="page-title">Well Come List Order !!! </h4>
+                            <h4 class="page-title">Wel Come List Order !!! </h4>
                         </div>
                     </div>
                 </div>
@@ -70,56 +72,52 @@
                                 <thead>
                                 <tr>
                                     <th scope="col" data-tablesaw-sortable-col="" data-tablesaw-priority="persist">Product Name</th>
-                                    <th scope="col" data-tablesaw-sortable-col="" data-tablesaw-sortable-default-col="" data-tablesaw-priority="3">Quantity</th>
                                     <th scope="col" data-tablesaw-sortable-col="" data-tablesaw-priority="2">Price</th>
-                                    <th scope="col" data-tablesaw-sortable-col="" data-tablesaw-priority="1">Category</th>
+                                    <th scope="col" data-tablesaw-sortable-col="" data-tablesaw-sortable-default-col="" data-tablesaw-priority="3">Quantity</th>
+                                    <th scope="col" data-tablesaw-sortable-col="" data-tablesaw-priority="1">Total</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>Avatar</td>
-                                    <td>1</td>
-                                    <td>1000000</td>
-                                    <td>Category Name</td>
-                                </tr>
-                                <tr>
-                                    <td>Titanic</td>
-                                    <td>2</td>
-                                    <td>19972323</td>
-                                    <td>Category Name</td>
-
-                                </tr>
-                                <tr>
-                                    <td>The Avengers</td>
-                                    <td>3</td>
-                                    <td>2013232322</td>
-                                    <td>Category Name</td>
-
-                                </tr>
-                                <tr>
-                                    <td>Harry Potter and the Deathly Hallows—Part 2</td>
-                                    <td>4</td>
-                                    <td>203232311</td>
-                                    <td>Category Name</td>
-
-                                </tr>
-                                <tr>
-                                    <td>Frozen</td>
-                                    <td>5</td>
-                                    <td>2013</td>
-                                    <td>Category Name</td>
-
-                                </tr>
-                                <tr>
-                                    <td>Iron Man 3</td>
-                                    <td>6</td>
-                                    <td>2013</td>
-                                    <td>Category Name</td>
-
-                                </tr>
+                                    <c:forEach items="${requestScope['carts']}" var="item">
+                                        <tr>
+                                            <td>${item.title}</td>
+                                            <td>${item.price}</td>
+                                            <td class="text-center">${item.quantity}</td>
+                                            <td>${item.totalPrice}</td>
+                                        </tr>
+                                    </c:forEach>
                                 </tbody>
                             </table>
-                            <a href="#" class="btn btn-primary waves-effect waves-light" style="margin-top: 50px;width: 100px;">Pay</a>
+                            <c:if test="${requestScope['carts'] != null}">
+                                <form action="/order?action=pay" method="post">
+                                    <button type="submit" class="btn btn-primary waves-effect waves-light" style="margin-top: 50px;width: 100px;">
+                                        Pay
+                                    </button>
+                                </form>
+<%--                                <a href="#" class="btn btn-primary waves-effect waves-light" style="margin-top: 50px;width: 100px;">Pay</a>--%>
+                            </c:if>
+
+                            <c:if test="${requestScope['success'] == true}">
+                                <script>
+                                    iziToast.success({
+                                        title: 'SUCCESS',
+                                        position: 'bottomRight',
+                                        timeout: 2500,
+                                        message: `<c:out value="${requestScope['message']}"/>`
+                                    });
+                                </script>
+                            </c:if>
+                            <c:if test="${requestScope['success'] == false}">
+                                <script>
+                                    iziToast.error({
+                                        title: 'ERROR',
+                                        position: 'bottomRight',
+                                        timeout: 2500,
+                                        message: `<c:out value="${requestScope['message']}"/>`
+                                    });
+                                </script>
+                            </c:if>
+
                         </div> <!-- end card-box-->
                     </div> <!-- end col-->
                 </div>
@@ -147,6 +145,8 @@
 <div class="rightbar-overlay"></div>
 
 <jsp:include page="../shared/script.jsp"></jsp:include>
+
+
 
 </body>
 </html>

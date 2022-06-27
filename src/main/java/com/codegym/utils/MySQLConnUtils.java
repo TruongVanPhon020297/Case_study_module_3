@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class MySQLConnUtils {
     public static Connection getConnection() {
         String hostName = "localhost";
-        String dbName = "db_case_md3?useUnicode=true&characterEncoding=UTF-8";
+        String dbName = "phone_db_case_md3?useUnicode=true&characterEncoding=UTF-8";
         String userName = "root";
         String password = "1234";
         return getSqlConnection(hostName, dbName, userName, password);

@@ -11,13 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class CategoryServiceImpl implements CategoryService{
-    private static final String SELECT_ALL_CATEGORY = "SELECT c.id,c.title FROM category AS c;";
-    private static String EXIST_CATEGORY_ID = "SELECT COUNT(*) AS count FROM category AS c WHERE c.id = ?;";
+public class CategoryServiceImpl implements CategoryService {
+    private static final String SELECT_ALL_CATEGORY = "SELECT c.id, c.title FROM categories AS c;";
+    private static String EXIST_CATEGORY_ID = "SELECT COUNT(*) AS count FROM categories AS c WHERE c.id = ?;";
+
     @Override
     public List<Category> findAll() {
         List<Category> categoryList = new ArrayList<>();
-        try{
+        try {
             Connection connection = MySQLConnUtils.getConnection();
             PreparedStatement statement = connection.prepareCall(SELECT_ALL_CATEGORY);
             ResultSet rs = statement.executeQuery();
@@ -25,13 +26,14 @@ public class CategoryServiceImpl implements CategoryService{
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String title = rs.getString("title");
-                categoryList.add(new Category(id,title));
+                categoryList.add(new Category(id, title));
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             MySQLConnUtils.printSQLException(e);
         }
         return categoryList;
     }
+
     @Override
     public Map<String, String> update(Category category) {
         return null;

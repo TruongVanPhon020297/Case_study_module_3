@@ -1,10 +1,8 @@
 package com.codegym.dao;
 
-import com.codegym.model.Product;
 import com.codegym.model.User;
 import com.codegym.utils.MySQLConnUtils;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LoginServiceImpl implements LoginService{
-    private static final String FIND_EMAIL = "SELECT * FROM _user AS u WHERE u.email = ?;";
-    private static final String EXISTS_EMAIL = "SELECT COUNT(*) AS count FROM _user AS u WHERE u.email = ?;";
+    private static final String FIND_EMAIL = "SELECT * FROM users AS u WHERE u.email = ?;";
+    private static final String EXISTS_EMAIL = "SELECT COUNT(*) AS count FROM users AS u WHERE u.email = ?;";
     @Override
     public boolean existsEmail(String email) {
         boolean exists = false;
@@ -54,8 +52,8 @@ public class LoginServiceImpl implements LoginService{
                 String mobile = rs.getString("mobile");
                 String emailFind = rs.getString("email");
                 String password = rs.getString("password_user");
-                int admin = rs.getInt("_admin");
-                int status = rs.getInt("_status");
+                int admin = rs.getInt("is_admin");
+                int status = rs.getInt("is_active");
                 userList.add(new User(id,fullName,mobile, emailFind, password,admin,status));
             }
         } catch (SQLException e) {
@@ -64,4 +62,28 @@ public class LoginServiceImpl implements LoginService{
         return userList;
     }
 
+    @Override
+    public User getUserByEmail(String email) {
+        User user = null;
+        try(
+                Connection connection = MySQLConnUtils.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(FIND_EMAIL);
+        ){
+            preparedStatement.setString(1,email);
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()) {
+                int id = rs.getInt("id");
+                String fullName = rs.getString("full_name");
+                String mobile = rs.getString("mobile");
+                String emailFind = rs.getString("email");
+                String password = rs.getString("password_user");
+                int admin = rs.getInt("is_admin");
+                int status = rs.getInt("is_active");
+                user = new User(id,fullName,mobile, emailFind, password,admin,status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
 }

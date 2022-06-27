@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface LoginService {
     boolean existsEmail(String email);
-    List<User>  findUserByEmail(String email);
+    List<User> findUserByEmail(String email);
+    User getUserByEmail(String email);
 }
