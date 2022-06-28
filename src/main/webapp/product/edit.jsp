@@ -78,32 +78,31 @@
                                 <form method="post" enctype="multipart/form-data">
                                     <c:choose>
                                         <c:when test="${requestScope['productFind'] != null}">
-                                            <c:forEach var="item" items="${requestScope['productFind']}">
                                             <div class="form-row">
                                                 <div class="form-group col-md-6">
                                                     <label for="inputEmail4" class="col-form-label">Title</label>
-                                                    <input type="text" required class="form-control" id="inputEmail4" placeholder="Title" name="title" aria-required="true" value="${item.getTitle()}">
+                                                    <input type="text" required class="form-control" id="inputEmail4" placeholder="Title" name="title" aria-required="true" value="${requestScope['productFind'].getTitle()}">
                                                 </div>
                                                 <div class="form-group col-md-6">
                                                     <label for="inputPassword4" class="col-form-label">Price</label>
-                                                    <input type="number" required class="form-control" id="inputPassword4" placeholder="Price" name="price" min="0" aria-required="true" value="${item.getPrice()}">
+                                                    <input type="number" required class="form-control" id="inputPassword4" placeholder="Price" name="price" min="0" aria-required="true" value="${requestScope['productFind'].getPrice()}">
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="form-group col-md-6">
                                                     <label for="FullName" class="col-form-label">Quantity</label>
-                                                    <input type="number" required class="form-control" id="FullName" placeholder="Quantity" name="quantity" min="0" aria-required="true" value="${item.getQuantity()}">
+                                                    <input type="number" required class="form-control" id="FullName" placeholder="Quantity" name="quantity" min="0" aria-required="true" value="${requestScope['productFind'].getQuantity()}">
                                                 </div>
                                                 <div class="form-group col-md-6">
                                                     <label for="inputState" class="col-form-label">Category</label>
                                                     <select id="inputState" class="form-control" name="category_id">
-                                                        <c:forEach items="${requestScope['categoryList']}" var="item1">
+                                                        <c:forEach items="${requestScope['categoryList']}" var="cate">
                                                             <c:choose>
-                                                                <c:when test="${item.getIdCategory() == item1.getId()}">
-                                                                    ...<option value="${item.getIdCategory()}" selected>${item1.getTitle()}</option>
+                                                                <c:when test="${requestScope['productFind'].getCategoryId() == cate.getId()}">
+                                                                    ...<option value="${requestScope['productFind'].getCategoryId()}" selected>${cate.getTitle()}</option>
                                                                 </c:when>
-                                                                <c:when test="${item.getIdCategory() != item1.getId()}">
-                                                                    ...<option value="${item1.getId()}">${item1.getTitle()}</option>
+                                                                <c:when test="${requestScope['productFind'].getCategoryId() != cate.getId()}">
+                                                                    ...<option value="${cate.getId()}">${cate.getTitle()}</option>
                                                                 </c:when>
                                                             </c:choose>
                                                         </c:forEach>
@@ -116,11 +115,10 @@
                                                     <input type="file" id="example-fileinput" class="form-control-file" name="file" accept="image/*">
                                                 </div>
                                                 <div class="form-group col-md-6">
-                                                    <input type="hidden" name="id_product" value="${item.getId()}">
+                                                    <input type="hidden" name="id_product" value="${requestScope['productFind'].getId()}">
                                                 </div>
                                             </div>
                                             <button type="submit" class="btn btn-primary waves-effect waves-light">Edit</button>
-                                        </c:forEach>
                                         </c:when>
                                         <c:when test="${requestScope['productFind'] == null}">
                                             <div class="form-row">

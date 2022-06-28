@@ -114,7 +114,7 @@
                                 </form>
                                 <h6>
                                     <c:if test="${requestScope['success'] == true}">
-                                        <c:out value="${'Thêm Sản Phẩm Thành Công'}"></c:out>
+                                        <c:out value="${'Thêm Người Dùng Thành Công'}"></c:out>
                                     </c:if>
                                 </h6>
                                 <ul>

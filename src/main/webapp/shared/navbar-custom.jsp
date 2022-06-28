@@ -143,7 +143,7 @@
                 <div class="dropdown-divider"></div>
 
                 <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                <a href="javascript:void(0);" onclick="logout()" class="dropdown-item notify-item">
                     <i class="fe-log-out"></i>
                     <span>Logout</span>
                 </a>
@@ -184,3 +184,17 @@
         </li>
     </ul>
 </div>
+
+<script>
+    function logout() {
+        let xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                let success =  xmlHttp.responseText;
+
+            }
+        }
+        xmlHttp.open("GET", "http://localhost:8080/logout", true); // true for asynchronous
+        xmlHttp.send(null);
+    }
+</script>

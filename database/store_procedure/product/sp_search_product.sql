@@ -1,7 +1,7 @@
 DELIMITER $$
 
 CREATE PROCEDURE sp_search_product(
-	IN key_value NVARCHAR(255),
+	IN key_value NVARCHAR(255)
 )
 BEGIN
 	SELECT * 

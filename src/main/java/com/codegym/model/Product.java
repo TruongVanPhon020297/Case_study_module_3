@@ -1,7 +1,6 @@
 package com.codegym.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 public class Product {
     private int id;
@@ -12,9 +11,15 @@ public class Product {
     private String created_at;
     private String updated_at;
     private int stopSelling;
-    private int idCategory;
+    private int categoryId;
 
-    public Product(int id, String title, String urlImage, BigDecimal price, int quantity, String created_at, String updated_at, int stopSelling, int idCategory) {
+    public Product(int id, String title, BigDecimal price) {
+        this.id = id;
+        this.title = title;
+        this.price = price;
+    }
+
+    public Product(int id, String title, String urlImage, BigDecimal price, int quantity, String created_at, String updated_at, int stopSelling, int categoryId) {
         this.id = id;
         this.title = title;
         this.urlImage = urlImage;
@@ -23,32 +28,32 @@ public class Product {
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.stopSelling = stopSelling;
-        this.idCategory = idCategory;
+        this.categoryId = categoryId;
     }
 
-    public Product(String title, String urlImage, BigDecimal price, int quantity, int idCategory) {
+    public Product(String title, String urlImage, BigDecimal price, int quantity, int categoryId) {
         this.title = title;
         this.urlImage = urlImage;
         this.price = price;
         this.quantity = quantity;
-        this.idCategory = idCategory;
+        this.categoryId = categoryId;
     }
 
-    public Product(int id, String title, BigDecimal price, int quantity, int idCategory) {
+    public Product(int id, String title, BigDecimal price, int quantity, int categoryId) {
         this.id = id;
         this.title = title;
         this.price = price;
         this.quantity = quantity;
-        this.idCategory = idCategory;
+        this.categoryId = categoryId;
     }
 
-    public Product(int id, String title, String urlImage, BigDecimal price, int quantity, int idCategory) {
+    public Product(int id, String title, String urlImage, BigDecimal price, int quantity, int categoryId) {
         this.id = id;
         this.title = title;
         this.urlImage = urlImage;
         this.price = price;
         this.quantity = quantity;
-        this.idCategory = idCategory;
+        this.categoryId = categoryId;
     }
 
     public Product() {
@@ -119,12 +124,12 @@ public class Product {
         this.stopSelling = stopSelling;
     }
 
-    public int getIdCategory() {
-        return idCategory;
+    public int getCategoryId() {
+        return categoryId;
     }
 
-    public void setIdCategory(int idCategory) {
-        this.idCategory = idCategory;
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 
     @Override
@@ -138,7 +143,7 @@ public class Product {
                 ", created_at='" + created_at + '\'' +
                 ", updated_at='" + updated_at + '\'' +
                 ", stopSelling=" + stopSelling +
-                ", idCategory=" + idCategory +
+                ", idCategory=" + categoryId +
                 '}';
     }
 }

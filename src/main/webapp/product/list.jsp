@@ -142,7 +142,7 @@
                                             </td>
                                             <td>
                                                 <c:forEach var="item1" items="${requestScope['categoryList']}">
-                                                    <c:if test="${item.getIdCategory() == item1.getId()}">
+                                                    <c:if test="${item.getCategoryId() == item1.getId()}">
                                                         <c:out value="${item1.getTitle()}"></c:out>
                                                     </c:if>
                                                 </c:forEach>
